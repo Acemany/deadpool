@@ -84,10 +84,10 @@ impl<M: Manager> Object<M> {
 
 impl<M: Manager> Drop for Object<M> {
     fn drop(&mut self) {
-        if let Some(inner) = self.inner.take() {
-            if let Some(pool) = self.pool.upgrade() {
-                pool.inner.return_object(inner)
-            }
+        if let Some(inner) = self.inner.take()
+            && let Some(pool) = self.pool.upgrade()
+        {
+            pool.inner.return_object(inner)
         }
     }
 }

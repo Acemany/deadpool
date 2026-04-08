@@ -2,7 +2,7 @@
 name = "deadpool-redis"
 version = "0.22.1"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.94"
 authors = [
     "Michael P. Jung <michael.jung@terreon.de>",
     "Subeom Choi <subumm1@gmail.com>",
@@ -20,7 +20,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 [features]
 default = ["rt_tokio_1"]
 rt_tokio_1 = ["deadpool/rt_tokio_1", "tokio-comp"]
-rt_async-std_1 = ["deadpool/rt_async-std_1", "async-std-comp"]
+rt_smol_2 = ["deadpool/rt_smol_2", "smol-comp"]
 serde = ["deadpool/serde", "dep:serde"]
 
 # Re-export of redis features
@@ -60,16 +60,17 @@ deadpool = { path = "../deadpool", version = "0.12.0", default-features = false,
     "managed",
 ] }
 redis = { version = "0.32", default-features = false, features = ["aio"] }
-serde = { package = "serde", version = "1.0", features = [
+serde = { package = "serde", version = "1.0.228", features = [
     "derive",
 ], optional = true }
-tokio = { version = "1.6", default-features = false, optional = true }
+tokio = { version = "1.51.0", default-features = false, optional = true }
+tracing = { version = "0.1" }
 
 [dev-dependencies]
-config = { version = "0.15", features = ["json"] }
-dotenvy = "0.15.0"
-futures = "0.3.15"
+config = { version = "0.15.22", features = ["json"] }
+dotenvy = "0.15.7"
+futures = "0.3.32"
 redis = { version = "0.32", default-features = false, features = [
     "tokio-comp",
 ] }
-tokio = { version = "1.6", features = ["macros", "rt-multi-thread", "sync"] }
+tokio = { version = "1.51.0", features = ["macros", "rt-multi-thread", "sync"] }

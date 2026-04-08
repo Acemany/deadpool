@@ -78,16 +78,16 @@ impl<T> Object<T> {
 
 impl<T> Drop for Object<T> {
     fn drop(&mut self) {
-        if let Some(obj) = self.obj.take() {
-            if let Some(pool) = self.pool.upgrade() {
-                {
-                    let mut queue = pool.queue.lock().unwrap();
-                    queue.push(obj);
-                }
-                let _ = pool.available.fetch_add(1, Ordering::Relaxed);
-                pool.semaphore.add_permits(1);
-                pool.clean_up();
+        if let Some(obj) = self.obj.take()
+            && let Some(pool) = self.pool.upgrade()
+        {
+            {
+                let mut queue = pool.queue.lock().unwrap();
+                queue.push(obj);
             }
+            let _ = pool.available.fetch_add(1, Ordering::Relaxed);
+            pool.semaphore.add_permits(1);
+            pool.clean_up();
         }
     }
 }

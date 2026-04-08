@@ -151,11 +151,13 @@ impl managed::Manager for Manager {
     type Type = MultiplexedConnection;
     type Error = RedisError;
 
+    #[tracing::instrument(name = "pool.redis.create", level = "debug", skip(self))]
     async fn create(&self) -> Result<MultiplexedConnection, RedisError> {
         let conn = self.client.get_multiplexed_async_connection().await?;
         Ok(conn)
     }
 
+    #[tracing::instrument(name = "pool.redis.recycle", level = "debug", skip(self, conn))]
     async fn recycle(&self, conn: &mut MultiplexedConnection, _: &Metrics) -> RecycleResult {
         let ping_number = self.ping_number.fetch_add(1, Ordering::Relaxed).to_string();
         // Using pipeline to avoid roundtrip for UNWATCH
